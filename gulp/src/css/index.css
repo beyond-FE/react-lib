@@ -51,6 +51,7 @@ table {
 }
 body {
   font-family: "微软雅黑", tahoma, arial, Hiragino Sans GB, '\5b8b\4f53', sans-serif;
+  padding-top: 100px;
 }
 .fn-hide {
   display: none;
@@ -65,9 +66,6 @@ body {
 .container {
   width: 1200px;
   margin: 0 auto;
-}
-.form-part {
-  margin-top: 100px;
 }
 .form-part button {
   padding: 7px 10px;

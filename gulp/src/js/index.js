@@ -144,9 +144,11 @@ var FormGoods=React.createClass({
         this.exChangeShow($(e.target));
     },
     //搜索框单击事件
-    handleSClick:function(e){
-        e.cancelBubble=true;
-        e.stopPropagation();//react中无效
+    handleSClick:function(event){
+        event.cancelBubble=true;
+        event.preventDefault();
+        event.stopPropagation();
+        event.nativeEvent.stopImmediatePropagation();
         //return false;也无效
         console.log(555);
 
@@ -185,7 +187,7 @@ var FormGoods=React.createClass({
             <div className="form-part">
                 <button ref="addGoods" onClick={this.handleClick}>新增商品</button>
                 <form action="">
-                    <input type="text" placeholder="请输入商品名称或商品编号" className="sercon" value={this.props.searVal} onChange={this.handleChange} ref="D_search" onKeyUp={this.handleOnkeyup} onClick={this.handleSClick} onFocus={this.handleFocus} onBlur={this.handleBlur}/>
+                    <input type="text" placeholder="请输入商品名称或商品编号" className="sercon" value={this.props.searVal} onChange={this.handleChange} ref="D_search" onKeyUp={this.handleOnkeyup}  onFocus={this.handleFocus} onBlur={this.handleBlur} id="D_search"/>
                     <input type="submit" value="搜索" className="searSub" onClick={this.handleSearClick}/>
                     <ul className="listBox" id="listBox" onClick={this.handleUChooseClick}>
                         {lisArr}
@@ -333,7 +335,7 @@ var Tablelist=React.createClass({
         var countArr=this.props.count,arr=this.props.goods;
         countArr[index]=value;
         arr[index].count=value;
-        this.props.onUserAutoInp(countArr,arr);
+        this.props.onUserAutoInp(arr,countArr);
     },
 
     //修改商品信息交互
@@ -528,36 +530,26 @@ var Shopping=React.createClass({
         })
     },
 
-    //浮层中新增商品点击确定逻辑
-    onUserSubmit:function(goodsArr,countArr){
-        this.setState({goods:goodsArr,count:countArr});
-    },
-
-    //表格中删除商品的业务逻辑
-    onUserCancel:function(goodsArr,countArr){
-        this.setState({goods:goodsArr,count:countArr});
-    },
-
-
     //表格中 商品数量 input change事件
     onUserCountChange:function(text,index){
         var count=this.state.count;
         var goods=this.state.goods;
         count[index]=text;
         goods[index].count=text;
-        //console.log(count);
         this.setState({count:count,goods:goods});
     },
-    //表格中商品数量加减逻辑
-    onUserAutoInp:function(countArr,goodsArr){
-        this.setState({count:countArr,goods:goodsArr});
+    setStateCommone:function(goodsArr,countArr){
+        //抽出的公共方法
+        //浮层中新增商品点击确定逻辑
+        //表格中删除商品的业务逻辑
+        //表格中商品数量加减逻辑
+        this.setState({goods:goodsArr,count:countArr});
     },
 
-    //表格中修改商品休息回调函数
+    //表格中修改商品信息回调函数
     onUserEditDetails:function(goodsArr){
         this.setState({goods:goodsArr});
     },
-
 
     //搜索商品input框change事件
     onUserSearchChange:function(text){
@@ -590,8 +582,8 @@ var Shopping=React.createClass({
         return(
             <div>
                 <FormGoods onUserAdd={this.onUserAdd} searVal={this.state.searVal} onUserSearchChange={this.onUserSearchChange} onUserSearch={this.onUserSearch} goods={this.state.goods}/>
-                <Tablelist goods={this.state.goods} onUserCancel={this.onUserCancel} onUserEditCount={this.onUserEditCount} filterText={this.state.filterText} count={this.state.count} onUserCountChange={this.onUserCountChange} onUserAutoInp={this.onUserAutoInp} onUserEditDetails={this.onUserEditDetails}/>
-                <Dialog gCodes={this.state.gCodes} gName={this.state.gName} gDetails={this.state.gDetails} gPrice={this.state.gPrice} gCount={this.state.gCount} onUserInput={this.handleUserInput} onUserSubmit={this.onUserSubmit} goods={this.state.goods} count={this.state.count}/>
+                <Tablelist goods={this.state.goods} onUserCancel={this.setStateCommone} onUserEditCount={this.onUserEditCount} filterText={this.state.filterText} count={this.state.count} onUserCountChange={this.onUserCountChange} onUserAutoInp={this.setStateCommone} onUserEditDetails={this.onUserEditDetails}/>
+                <Dialog gCodes={this.state.gCodes} gName={this.state.gName} gDetails={this.state.gDetails} gPrice={this.state.gPrice} gCount={this.state.gCount} onUserInput={this.handleUserInput} onUserSubmit={this.setStateCommone} goods={this.state.goods} count={this.state.count}/>
             </div>
         );
     }
